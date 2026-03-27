@@ -1,0 +1,658 @@
+{
+  "name": "VocalOps Multi-Agent Voice Command Dispatcher System",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "command",
+              "name": "command",
+              "value": "={{ $json.body.user_command }}",
+              "type": "string"
+            },
+            {
+              "id": "targetAgent",
+              "name": "targetAgent",
+              "value": "={{ $json.body.target_agent.toLowerCase() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b248031a-a275-4a6d-9bea-46002d48698e",
+      "name": "Parse Command",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        912
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.targetAgent }}",
+                    "rightValue": "alpha",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Alpha"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.targetAgent }}",
+                    "rightValue": "bravo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Bravo"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.targetAgent }}",
+                    "rightValue": "charlie",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Charlie"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.targetAgent }}",
+                    "rightValue": "delta",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Delta"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Default"
+        }
+      },
+      "id": "06b4eea1-ab35-4cca-b9f8-387f9ca2e337",
+      "name": "Route to Agent",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        688,
+        864
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.command }}",
+        "options": {
+          "systemMessage": "You are Alpha, the tactical cybersecurity and reconnaissance agent for the VocalOps system. Your primary directive is threat intelligence, payload analysis, and system vulnerability assessment. The user is a Red Team operator. When the user gives you a command, execute it using your available tools. Respond to the user with concise, military-style status updates. Keep responses under two sentences. Example: \"Target acquired. Running vulnerability scan on the designated IP now.\" Do not use markdown. Speak purely in plain text.",
+          "returnIntermediateSteps": false
+        }
+      },
+      "id": "d60924d8-5b13-450b-95e1-cf0e8b5fc6ec",
+      "name": "Alpha Agent (Recon & Security)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        912,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7e6d6284-5b93-4641-8234-88f034a69ebe",
+      "name": "Google Search",
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        992,
+        736
+      ],
+      "credentials": {
+        "serpApi": {
+          "id": "8LgAej0iOhyI0ELL",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "response",
+              "name": "response",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "agent",
+              "name": "agent",
+              "value": "={{ $(\"Parse Command\").item.json.targetAgent }}",
+              "type": "string"
+            },
+            {
+              "id": "command",
+              "name": "command",
+              "value": "={{ $(\"Parse Command\").item.json.command }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "421e70c9-abfc-4415-acec-fe9a63d282fe",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1264,
+        912
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.command }}",
+        "options": {
+          "systemMessage": "You are Bravo, the lead development and software architecture agent for VocalOps. You specialize in C++, complex web development, and backend infrastructure. The user will ask you to analyze logic, suggest architectural improvements, or debug concepts. Provide brilliant, highly technical, but concise answers. You are speaking out loud to the user, so you cannot read out lines of code. Instead, explain the logic or the fix in plain English. Keep it under three sentences. End your responses by asking if the user wants you to log the solution."
+        }
+      },
+      "id": "fbc7e48b-816a-47b8-a898-afc74d9239d3",
+      "name": "Bravo Agent (Web Dev & Architecture)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        912,
+        912
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.command }}",
+        "options": {
+          "systemMessage": "You are Charlie, the open-source intelligence (OSINT) and data gathering agent. Your job is to pull information from the web, summarize complex topics, and deliver the facts rapidly. You are analytical, cold, and precise. When the user asks you to research a target, a company, or a concept, use your search tools, extract the bottom line, and read a two-sentence summary back to the user. Strip out all complex formatting, URLs, and bullet points so your text can be synthesized by a text-to-speech engine smoothly."
+        }
+      },
+      "id": "3529e4b8-c221-4d48-ba25-ab0586481a4c",
+      "name": "Charlie Agent (OSINT & Research)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        912,
+        1104
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "23250ac1-54e2-4ef2-85e1-2e956c4462d1",
+      "name": "Wikipedia",
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        992,
+        1328
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.command }}",
+        "options": {
+          "systemMessage": "You are Delta, the operations and logistics agent. You are responsible for memory, logging, and workflow management. The user will command you to save ideas, create tickets, or log data (e.g., \"Delta, log a new project idea for a lost and found portal\"). Use your database tools to execute this action. Once the database is updated, confirm the action with the user in one short, punchy sentence. Example: \"Data logged successfully to the master spreadsheet.\" Be highly efficient."
+        }
+      },
+      "id": "43e020cc-4656-453d-82c8-1cb789cc91d3",
+      "name": "Delta Agent (Taskmaster & Logger)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        912,
+        1616
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1kI-b6dnfaUZShak4a1Wc3d0Y0kF_6y-acXRO31WAtHI",
+          "mode": "list",
+          "cachedResultName": "VocalOps Master Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kI-b6dnfaUZShak4a1Wc3d0Y0kF_6y-acXRO31WAtHI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kI-b6dnfaUZShak4a1Wc3d0Y0kF_6y-acXRO31WAtHI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Target Agent",
+              "displayName": "Target Agent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "User Command",
+              "displayName": "User Command",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "a0b71bbd-c798-4582-a16a-e6cbcf78bfeb",
+      "name": "Google Sheets Logger",
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        992,
+        1840
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Jxw80jxUeUOsHsAo",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "options": {
+          "systemMessage": "You are the VocalOps Central Dispatch AI. You are a highly advanced, efficient, and slightly robotic voice assistant. The user is speaking to you via a hands-free terminal. If the user greets you, greet them back professionally. If they ask a general question, answer it in one or two short sentences. Always remind them that they can route specialized tasks to your sub-agents by saying their names: Alpha (for security and recon), Bravo (for development and codebase queries), Charlie (for system ops and research), or Delta (for logging and data). Never use markdown, asterisks, or lists in your response. Speak naturally."
+        }
+      },
+      "id": "64a4bed3-625a-4cd9-a24d-05913efba318",
+      "name": "Default Agent (Central Dispatcher)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        912,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "XqKOtzivDd9NnO0u",
+          "cachedResultName": "VocalOps_Master_Log"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Target_Agent": "={{ $json.agent }}",
+            "User_Command": "={{ $json.command }}",
+            "Status": "completed"
+          }
+        },
+        "options": {}
+      },
+      "id": "a31e65e4-f6b9-4106-b9aa-c7e2decd2070",
+      "name": "Log Interaction",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1488,
+        912
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"ai_reply\": \"Uplink established. System is online.\" }",
+        "options": {}
+      },
+      "id": "bf7b66e1-b9a0-45ae-8f00-f3b9e22695e3",
+      "name": "Respond to Form",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1712,
+        912
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "vocalops-command",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "5a2c8142-b1dc-4de9-b9e1-4118c43bc4d6",
+      "name": "Voice Command Input",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        912
+      ],
+      "webhookId": "803e00f6-db78-4bdc-b68f-668514cb99d5"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "maxOutputTokens": 2048,
+          "temperature": 0.7
+        }
+      },
+      "id": "a623da59-d418-42d9-9d2d-620ce4029cdb",
+      "name": "Google Gemini Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        992,
+        336
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Dic7GYtMWTwN67oS",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Parse Command": {
+      "main": [
+        [
+          {
+            "node": "Route to Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route to Agent": {
+      "main": [
+        [
+          {
+            "node": "Alpha Agent (Recon & Security)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bravo Agent (Web Dev & Architecture)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Charlie Agent (OSINT & Research)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delta Agent (Taskmaster & Logger)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Default Agent (Central Dispatcher)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alpha Agent (Recon & Security)": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Search": {
+      "ai_tool": [
+        [
+          {
+            "node": "Alpha Agent (Recon & Security)",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Charlie Agent (OSINT & Research)",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Log Interaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bravo Agent (Web Dev & Architecture)": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Charlie Agent (OSINT & Research)": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "Charlie Agent (OSINT & Research)",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delta Agent (Taskmaster & Logger)": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Logger": {
+      "ai_tool": [
+        [
+          {
+            "node": "Delta Agent (Taskmaster & Logger)",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Agent (Central Dispatcher)": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Interaction": {
+      "main": [
+        [
+          {
+            "node": "Respond to Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice Command Input": {
+      "main": [
+        [
+          {
+            "node": "Parse Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Alpha Agent (Recon & Security)",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Bravo Agent (Web Dev & Architecture)",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Charlie Agent (OSINT & Research)",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Delta Agent (Taskmaster & Logger)",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Default Agent (Central Dispatcher)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "89674a3b-0aa6-4702-b60c-1a4b99c5e5de",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e727b18c8a98ca0b7f71606fb7aa3d2d2235ef6d4181ff0e54aafe1ac0fd7a70"
+  },
+  "id": "utsAMhW0ET9HadAy",
+  "tags": []
+}

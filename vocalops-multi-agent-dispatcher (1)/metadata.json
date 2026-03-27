@@ -1,0 +1,5 @@
+{
+  "name": "VocalOps Multi-Agent Dispatcher",
+  "description": "A continuous-listening, multi-agent AI voice interface with a cyberpunk terminal UI.",
+  "requestFramePermissions": ["microphone"]
+}
