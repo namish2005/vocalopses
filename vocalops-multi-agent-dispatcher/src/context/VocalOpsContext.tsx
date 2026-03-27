@@ -399,7 +399,7 @@ export const VocalOpsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     addLog(`UPLINKING TO ${targetAgentId.toUpperCase()} CORE...`, 'system');
 
     // Handle the proxy fetch with better error reporting
-    const proxyPromise = fetch('/api/proxy', {
+    const proxyPromise = fetch('https://vocalopses.onrender.com/api/proxy', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -477,7 +477,7 @@ export const VocalOpsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
 
     const performTest = async (url: string) => {
-      const response = await fetch('/api/proxy', {
+      const response = await fetch('https://vocalopses.onrender.com/api/proxy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ target_agent: 'Default', user_command: 'ping', webhook_url: url }),
